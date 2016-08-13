@@ -5,6 +5,7 @@ project( cinder )
 
 option( CINDER_BUILD_SAMPLES "Build all samples." OFF )
 option( CINDER_BUILD_TESTS "Build all unit tests." OFF )
+option( CINDER_INSTALL_LIBRARIES "Arrange for 'make install' to install Cinder to ${CMAKE_INSTALL_PREFIX}." OFF )
 set( CINDER_BUILD_SAMPLE "" CACHE STRING "Build a specific sample by specifying its path relative to the samples directory (ex. '_opengl/Cube')." )
 
 set( CINDER_PATH      "${CMAKE_CURRENT_SOURCE_DIR}" )

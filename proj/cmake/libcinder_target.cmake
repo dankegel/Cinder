@@ -55,3 +55,32 @@ export( TARGETS cinder FILE ${PROJECT_BINARY_DIR}/${CINDER_LIB_DIRECTORY}/cinder
 configure_file( ${CMAKE_CURRENT_LIST_DIR}/modules/cinderConfig.buildtree.cmake.in
 	${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/cinderConfig.cmake
 )
+
+if( CINDER_INSTALL_LIBRARIES )
+	# These commands cause 'make install' to do what many Unix/Linux
+	# developers expect, i.e. install a copy of libcinder and its
+	# headers, plus a pkgconfig file, to a global location so Cinder
+	# can be used as a building block by apps that use pkgconfig
+	# or bare -I's and -l's (rather than cmake features or
+	# Cinder blocks) to find external libraries.
+	# Using Cinder outside of its ecosystem like this is experimental,
+	# so you will probably encounter many rough edges.
+	# Install all the interface headers needed for users to use libcinder
+	# Install into a "cinder" subdirectory to avoid clashing with
+	# other installed headers.
+	# Oh, dear me, cmake's install syntax is heinous.
+	install(
+		#DIRECTORY ${CINDER_PATH}/lib/${CINDER_TARGET_SUBFOLDER}/${CMAKE_BUILD_TYPE}/
+		#DESTINATION lib/cinder/${CINDER_TARGET_GL}
+		#FILES_MATCHING PATTERN libcinder*.a
+		FILES ${CINDER_PATH}/lib/${CINDER_TARGET_SUBFOLDER}/${CMAKE_BUILD_TYPE}/libcinder.a
+		DESTINATION lib/cinder/${CINDER_TARGET_GL}
+	)
+	install( DIRECTORY ${CINDER_INC_DIR}/cinder DESTINATION include/cinder )
+	install( DIRECTORY ${CINDER_INC_DIR}/glload DESTINATION include/cinder )
+	install( DIRECTORY ${CINDER_INC_DIR}/glm DESTINATION include/cinder )
+	MESSAGE( "You are installing libcinder for external use.  External apps should:" )
+	MESSAGE( "use -I ${CMAKE_INSTALL_PREFIX}/include/cinder to find cinder/cinder.h, and")
+	MESSAGE( "use -L ${CMAKE_INSTALL_PREFIX}/lib/cinder to find -lcinder.")
+	# FIXME: also install a .pc file with the preceding
+endif()

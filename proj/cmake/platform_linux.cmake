@@ -211,3 +211,26 @@ list( APPEND CINDER_DEFINES "-D_UNIX" ${GLFW_FLAGS}  )
 if( NOT CINDER_BOOST_USE_SYSTEM )
 	list( APPEND CINDER_DEFINES "-D_GLIBCXX_USE_CXX11_ABI=0" )
 endif()
+
+if( CINDER_INSTALL_LIBRARIES )
+	# These commands cause 'make install' to do what many Unix/Linux
+	# developers expect, i.e. install a copy of libcinder and its
+	# headers, plus a pkgconfig file, to a global location so Cinder
+	# can be used as a building block by apps that use pkgconfig
+	# or bare -I's and -l's (rather than cmake features or
+	# Cinder blocks) to find external libraries.
+	# Using Cinder outside of its ecosystem like this is experimental,
+	# so you will probably encounter many rough edges.
+	# Install all the interface headers needed for users to use libcinder
+	# Install into a "cinder" subdirectory to avoid clashing with
+	# other installed headers.
+	if( NOT CINDER_BOOST_USE_SYSTEM)
+		#install( DIRECTORY ${CINDER_INC_DIR}/boost DESTINATION include/cinder )
+		install(
+			DIRECTORY ${LINUX_LIB_DIRECTORY}
+			DESTINATION lib/cinder
+			FILES_MATCHING PATTERN libboost*.a
+			PATTERN ${CMAKE_BUILD_TYPE} EXCLUDE
+		)
+	endif()
+endif()
